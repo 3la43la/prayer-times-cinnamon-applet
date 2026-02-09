@@ -1,0 +1,37 @@
+{
+    "city": {
+        "type": "entry",
+        "default": "Riyadh",
+        "description": "المدينة (English)"
+    },
+    "country": {
+        "type": "entry",
+        "default": "Saudi Arabia",
+        "description": "الدولة (English)"
+    },
+    "method": {
+        "type": "combobox",
+        "default": 4,
+        "description": "طريقة الحساب",
+        "options": {
+            "أم القرى": 4,
+            "الرابطة": 3,
+            "مصر": 5,
+            "الكويت": 9
+        }
+    },
+    "timeFormat": {
+        "type": "combobox",
+        "default": "24h",
+        "description": "نظام الوقت",
+        "options": {
+            "12 ساعة (ص/م)": "12h",
+            "24 ساعة": "24h"
+        }
+    },
+    "enableSound": {
+        "type": "switch",
+        "default": true,
+        "description": "تفعيل الصوت"
+    }
+}
