@@ -1,0 +1,41 @@
+/* النص في شريط المهام */
+.applet-label {
+    font-weight: bold;
+    padding: 0 5px;
+}
+
+/* اللون الأحمر عند اقتراب الصلاة */
+.urgent-label .applet-label {
+    color: #ff4444 !important;
+}
+
+/* القائمة المنبثقة */
+.prayer-popup-title {
+    font-weight: bold;
+    color: #4eb0ff;
+    padding: 10px;
+    text-align: center;
+}
+
+.prayer-box {
+    width: 240px; /* زدنا العرض من 200 إلى 240 ليستوعب AM/PM */
+    padding: 2px 8px;
+}
+
+.prayer-item-time {
+    font-size: 0.9em; /* تصغير الخط قليلاً ليبدو أنيقاً مع التنسيق الجديد */
+    color: #00ff7f;
+    font-weight: bold;
+}
+.prayer-item-time {
+    font-weight: bold;
+    color: #00ff7f; /* وقت الصلاة أخضر فاقع */
+    font-family: 'Monospace';
+}
+
+.applet-label { font-weight: bold; padding: 0 5px; }
+.urgent-label .applet-label { color: #ff4444 !important; }
+.prayer-popup-title { font-weight: bold; color: #4eb0ff; padding: 10px; text-align: center; font-size: 1.1em; }
+.prayer-box { width: 235px; padding: 5px 12px; }
+.prayer-item-label { font-weight: bold; color: white; }
+.prayer-item-time { font-weight: bold; color: #00ff7f; font-family: 'Monospace'; }

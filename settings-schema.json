@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
     "location_sec": {
         "type": "section",
         "title": "إعدادات الموقع / Location"
@@ -72,5 +73,52 @@
         "type": "switch",
         "default": true,
         "description": "تفعيل صوت الأذان"
+=======
+    "header1": {
+        "type": "header",
+        "description": "Location Settings - v2.0"
+    },
+    "location_mode": {
+        "type": "combobox",
+        "default": "city",
+        "description": "طريقة تحديد الموقع",
+        "options": {
+            "اسم المدينة": "city",
+            "الإحداثيات": "coords"
+        }
+    },
+    "get_location_btn": {
+        "type": "button",
+        "description": "تحديث الموقع تلقائياً عبر IP",
+        "callback": "on_get_location_clicked"
+    },
+    "city": { "type": "entry", "default": "Makkah", "description": "المدينة", "dependency": "location_mode=city" },
+    "lat": { "type": "entry", "default": "21.4225", "description": "Latitude", "dependency": "location_mode=coords" },
+    "lng": { "type": "entry", "default": "39.8262", "description": "Longitude", "dependency": "location_mode=coords" },
+    "header2": {
+        "type": "header",
+        "description": "Preferences - التفضيلات"
+    },
+    "use_12h": {
+        "type": "switch",
+        "default": true,
+        "description": "نظام 12 ساعة (ص/م)"
+    },
+    "enable_audio": {
+        "type": "switch",
+        "default": false,
+        "description": "تفعيل التنبيه الصوتي"
+    },
+    "method": {
+        "type": "combobox",
+        "default": "4",
+        "description": "طريقة الحساب",
+        "options": {
+            "أم القرى (مكة)": "4",
+            "رابطة العالم الإسلامي": "3",
+            "الهيئة العامة للمساحة": "0",
+            "دبي": "11"
+        }
+>>>>>>> 86772e0 (إطلاق الإصدارة الثانية v2.0 - إضافة ميزات التوقيت وإعادة الاتصال الذكية)
     }
 }

@@ -1,6 +1,15 @@
 {
+<<<<<<< HEAD
     "uuid": "prayer-times@3laa.ksa",
     "name": "أوقات الصلاة الاحترافي",
     "description": "عرض الصلاة القادمة، عد تنازلي، إشعارات، وصوت الأذان",
     "icon": "calendar-timezone-symbolic"
+=======
+    "uuid": "prayer@3laa.ksa",
+    "name": "أوقات الصلاة",
+    "description": "عرض أوقات الصلاة مع عد تنازلي وتنبيهات",
+    "icon": "calendar",
+    "version": "1.0.0",
+    "cinnamon-version": ["5.0", "6.0"]
+>>>>>>> 86772e0 (إطلاق الإصدارة الثانية v2.0 - إضافة ميزات التوقيت وإعادة الاتصال الذكية)
 }
