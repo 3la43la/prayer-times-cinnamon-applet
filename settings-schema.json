@@ -1,29 +1,37 @@
 {
+    "location_sec": {
+        "type": "section",
+        "title": "إعدادات الموقع / Location"
+    },
     "city": {
         "type": "entry",
         "default": "Riyadh",
-        "description": "City"
+        "description": "المدينة (English)"
     },
     "country": {
         "type": "entry",
         "default": "Saudi Arabia",
-        "description": "Country"
+        "description": "الدولة (English)"
     },
     "method": {
         "type": "combobox",
         "default": 4,
-        "description": "Method",
+        "description": "طريقة الحساب",
         "options": {
-            "Umm Al-Qura": 4,
-            "Muslim World League": 3,
-            "Egypt": 5,
-            "Kuwait": 9
+            "أم القرى": 4,
+            "الرابطة": 3,
+            "مصر": 5,
+            "الكويت": 9
         }
+    },
+    "display_sec": {
+        "type": "section",
+        "title": "إعدادات العرض / Display"
     },
     "appLocale": {
         "type": "combobox",
         "default": "ar",
-        "description": "Language",
+        "description": "لغة البرنامج",
         "options": {
             "العربية": "ar",
             "English": "en"
@@ -32,15 +40,37 @@
     "timeFormat": {
         "type": "combobox",
         "default": "24h",
-        "description": "Time Format",
+        "description": "نظام الوقت",
         "options": {
-            "12h": "12h",
-            "24h": "24h"
+            "12 ساعة (ص/م)": "12h",
+            "24 ساعة": "24h"
         }
+    },
+    "pre_notification_sec": {
+        "type": "section",
+        "title": "التنبيه المسبق / Pre-Notification"
+    },
+    "enablePreNotify": {
+        "type": "switch",
+        "default": true,
+        "description": "تفعيل التنبيه المسبق"
+    },
+    "preNotifyTime": {
+        "type": "spinbutton",
+        "default": 10,
+        "min": 1,
+        "max": 30,
+        "step": 1,
+        "units": "دقيقة / mins",
+        "description": "تنبيه قبل الصلاة بـ:"
+    },
+    "notifications_sec": {
+        "type": "section",
+        "title": "التنبيهات / Notifications"
     },
     "enableSound": {
         "type": "switch",
         "default": true,
-        "description": "Sound"
+        "description": "تفعيل صوت الأذان"
     }
 }

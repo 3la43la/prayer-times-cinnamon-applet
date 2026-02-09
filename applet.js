@@ -10,23 +10,33 @@ class PrayerTimesApplet extends Applet.TextIconApplet {
     constructor(metadata, orientation, panelHeight, instanceId) {
         super(orientation, panelHeight, instanceId);
 
-        this.settings = new Settings.AppletSettings(this, metadata.uuid, instanceId);
-        this.settings.bindProperty(Settings.BindingDirection.IN, "city", "city", this._updateData.bind(this), null);
-        this.settings.bindProperty(Settings.BindingDirection.IN, "country", "country", this._updateData.bind(this), null);
-        this.settings.bindProperty(Settings.BindingDirection.IN, "method", "method", this._updateData.bind(this), null);
-        this.settings.bindProperty(Settings.BindingDirection.IN, "appLocale", "appLocale", this._refreshUI.bind(this), null);
-        this.settings.bindProperty(Settings.BindingDirection.IN, "timeFormat", "timeFormat", this._refreshUI.bind(this), null);
-        this.settings.bindProperty(Settings.BindingDirection.IN, "enableSound", "enableSound", null, null);
+        this.metadata = metadata;
+        this.instanceId = instanceId;
+        this.prayerData = null;
+        this.lastNotified = ""; 
+        this.preNotified = ""; 
+
+        try {
+            this.settings = new Settings.AppletSettings(this, metadata.uuid, instanceId);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "city", "city", this._updateData.bind(this), null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "country", "country", this._updateData.bind(this), null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "method", "method", this._updateData.bind(this), null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "appLocale", "appLocale", this._refreshUI.bind(this), null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "timeFormat", "timeFormat", this._refreshUI.bind(this), null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "enablePreNotify", "enablePreNotify", null, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "preNotifyTime", "preNotifyTime", null, null);
+            this.settings.bindProperty(Settings.BindingDirection.IN, "enableSound", "enableSound", null, null);
+        } catch (e) {
+            global.logError("PrayerApplet: Settings error: " + e.message);
+        }
 
         this.menuManager = new PopupMenu.PopupMenuManager(this);
         this.menu = new Applet.AppletPopupMenu(this, orientation);
         this.menuManager.addMenu(this.menu);
 
-        this.prayerData = null;
         this.session = new Soup.Session();
         this._updateData();
 
-        // تحديث كل دقيقة بدقة
         GLib.timeout_add_seconds(GLib.PRIORITY_DEFAULT, 60, () => {
             this._refreshUI();
             return true;
@@ -41,7 +51,8 @@ class PrayerTimesApplet extends Applet.TextIconApplet {
             'Maghrib': {ar: 'المغرب', en: 'Maghrib'},
             'Isha': {ar: 'العشاء', en: 'Isha'},
             'within': {ar: 'خلال', en: 'in'},
-            'hijri': {ar: 'الهجري', en: 'Hijri'}
+            'hijri': {ar: 'الهجري', en: 'Hijri'},
+            'preMsg': {ar: 'بقي صلاة', en: 'left for'}
         };
         return i18n[key] ? i18n[key][this.appLocale] : key;
     }
@@ -70,32 +81,43 @@ class PrayerTimesApplet extends Applet.TextIconApplet {
             let [h, m] = timings[p].split(':');
             let pDate = new Date();
             pDate.setHours(h, m, 0);
-
             if (pDate > now) {
                 nextPrayer = { name: p, date: pDate };
                 break;
             }
         }
 
-        // إذا انتهت صلوات اليوم، ابحث عن فجر الغد
         if (!nextPrayer) {
             let [h, m] = timings["Fajr"].split(':');
             let pDate = new Date();
             pDate.setDate(pDate.getDate() + 1);
             pDate.setHours(h, m, 0);
             nextPrayer = { name: "Fajr", date: pDate };
-            // تحديث البيانات لليوم الجديد عند منتصف الليل
             if (now.getHours() === 0 && now.getMinutes() < 5) this._updateData();
         }
 
         let diffMs = nextPrayer.date - now;
         let diffMins = Math.floor(diffMs / 60000);
+        
+        // منطق التنبيه المسبق المخصص
+        if (this.enablePreNotify && diffMins === this.preNotifyTime && this.preNotified !== nextPrayer.name) {
+            let msg = this.appLocale === 'ar' 
+                ? `بقي ${this.preNotifyTime} دقائق على صلاة ${this._t(nextPrayer.name)}` 
+                : `${this.preNotifyTime} mins left for ${this._t(nextPrayer.name)}`;
+            Main.notify("🔔 " + this._t(nextPrayer.name), msg);
+            this.preNotified = nextPrayer.name;
+        }
+
         let h = Math.floor(diffMins / 60);
         let m = diffMins % 60;
 
         this.set_applet_label(`${this._t(nextPrayer.name)} ${this._t('within')} ${h}:${m < 10 ? '0'+m : m}`);
         this._updateIcon(nextPrayer.name);
         this._fillMenu();
+
+        if (diffMins <= 0 && this.lastNotified !== nextPrayer.name) {
+            this._doNotify(nextPrayer.name);
+        }
     }
 
     _updateIcon(p) {
@@ -103,14 +125,21 @@ class PrayerTimesApplet extends Applet.TextIconApplet {
         this.set_applet_icon_symbolic_name(icons[p] || "weather-clear-symbolic");
     }
 
+    _doNotify(prayerId) {
+        Main.notify("🕌 " + this._t(prayerId), `${this._t(prayerId)}`);
+        if (this.enableSound) {
+            let soundPath = GLib.build_filenamev([this.metadata.path, "azaan.wav"]);
+            GLib.spawn_command_line_async(`play "${soundPath}"`);
+        }
+        this.lastNotified = prayerId;
+    }
+
     _fillMenu() {
         this.menu.removeAll();
         if (!this.prayerData) return;
-        
         let h = this.prayerData.date.hijri;
         this.menu.addMenuItem(new PopupMenu.PopupMenuItem(`${this._t('hijri')}: ${h.day} ${this.appLocale === 'ar' ? h.month.ar : h.month.en} ${h.year}`, {reactive: false}));
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
-
         ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"].forEach(p => {
             let time = this.prayerData.timings[p];
             if (this.timeFormat === "12h") {
@@ -122,7 +151,6 @@ class PrayerTimesApplet extends Applet.TextIconApplet {
             this.menu.addMenuItem(new PopupMenu.PopupMenuItem(`${this._t(p)}: ${time}`));
         });
     }
-
     on_applet_clicked() { this.menu.toggle(); }
 }
 
