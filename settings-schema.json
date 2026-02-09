@@ -2,36 +2,45 @@
     "city": {
         "type": "entry",
         "default": "Riyadh",
-        "description": "المدينة (English)"
+        "description": "City"
     },
     "country": {
         "type": "entry",
         "default": "Saudi Arabia",
-        "description": "الدولة (English)"
+        "description": "Country"
     },
     "method": {
         "type": "combobox",
         "default": 4,
-        "description": "طريقة الحساب",
+        "description": "Method",
         "options": {
-            "أم القرى": 4,
-            "الرابطة": 3,
-            "مصر": 5,
-            "الكويت": 9
+            "Umm Al-Qura": 4,
+            "Muslim World League": 3,
+            "Egypt": 5,
+            "Kuwait": 9
+        }
+    },
+    "appLocale": {
+        "type": "combobox",
+        "default": "ar",
+        "description": "Language",
+        "options": {
+            "العربية": "ar",
+            "English": "en"
         }
     },
     "timeFormat": {
         "type": "combobox",
         "default": "24h",
-        "description": "نظام الوقت",
+        "description": "Time Format",
         "options": {
-            "12 ساعة (ص/م)": "12h",
-            "24 ساعة": "24h"
+            "12h": "12h",
+            "24h": "24h"
         }
     },
     "enableSound": {
         "type": "switch",
         "default": true,
-        "description": "تفعيل الصوت"
+        "description": "Sound"
     }
 }
