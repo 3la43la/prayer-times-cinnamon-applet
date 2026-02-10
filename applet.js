@@ -105,7 +105,7 @@ MyApplet.prototype = {
 
     _buildMenu: function() {
         this.menu.removeAll();
-        let titleItem = new PopupMenu.PopupMenuItem(this.date_info.hijri, { reactive: false });
+        let titleItem = new PopupMenu.PopupMenuItem(`التاريخ الهجري: ${this.date_info.hijri}`, { reactive: false });
         titleItem.actor.add_style_class_name("prayer-popup-title");
         this.menu.addMenuItem(titleItem);
         this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
