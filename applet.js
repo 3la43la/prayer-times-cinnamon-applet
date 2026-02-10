@@ -129,7 +129,7 @@ MyApplet.prototype = {
         }
     },
 
-    _runCountdown: function() {
+_runCountdown: function() {
         if (!this.timings) return;
         let now = new Date();
         let list = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
@@ -143,15 +143,32 @@ MyApplet.prototype = {
 
         if (next) {
             let diff = Math.floor((nextT - now) / 1000);
-            let mins = Math.floor(diff / 60);
+            let hours = Math.floor(diff / 3600);
+            let mins = Math.floor((diff % 3600) / 60);
             let secs = diff % 60;
-            this.set_applet_label(`${this._translate(next)}: -${mins}:${secs < 10 ? '0'+secs : secs}`);
-            if (mins < 10) this.actor.add_style_class_name("urgent-label");
-            else this.actor.remove_style_class_name("urgent-label");
+
+            // التعديل هنا ليكون الشكل: "العصر خلال 10:15"
+            // إذا كان هناك ساعات متبقية سيظهرها أيضاً
+            let timeString = "";
+            if (hours > 0) {
+                timeString = `${hours}:${mins < 10 ? '0' + mins : mins}`;
+            } else {
+                timeString = `${mins}:${secs < 10 ? '0' + secs : secs}`;
+            }
+
+            this.set_applet_label(`${this._translate(next)} خلال ${timeString}`);
+
+            // تغيير اللون للأحمر إذا بقي أقل من 10 دقائق
+            if (hours === 0 && mins < 10) {
+                this.actor.add_style_class_name("urgent-label");
+            } else {
+                this.actor.remove_style_class_name("urgent-label");
+            }
         } else {
             this.set_applet_label("انتظار الفجر");
             this.actor.remove_style_class_name("urgent-label");
         }
+
         if (this._timerId) Mainloop.source_remove(this._timerId);
         this._timerId = Mainloop.timeout_add_seconds(1, () => this._runCountdown());
     },
@@ -164,4 +181,5 @@ MyApplet.prototype = {
 
 function main(metadata, orientation, panel_height, instance_id) {
     return new MyApplet(metadata, orientation, panel_height, instance_id);
+
 }
